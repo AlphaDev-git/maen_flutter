@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../Main_Screen/view/main_screen_view.dart';
+import 'package:maen/feature/OnBoarding/view/onboard_view.dart';
 
 
 void delayAndNavigate(BuildContext context) {
@@ -12,6 +12,6 @@ void delayAndNavigate(BuildContext context) {
     // else{
     //   Get.offAll(AuthLoginView(),duration: Duration(seconds: 1),transition: Transition.zoom);
     // }
-    Get.offAll(MainScreenView(),duration: Duration(seconds: 1),transition: Transition.zoom);
+    Get.offAll(OnBoardView(),duration: Duration(seconds: 1),transition: Transition.zoom);
   });
 }

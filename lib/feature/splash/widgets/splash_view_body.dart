@@ -15,8 +15,8 @@ class _SplashViewBodyState extends State<SplashViewBody>
 
   @override
   void initState() {
-    faddingAnimation();
     super.initState();
+    faddingAnimation();
   }
 
   @override
@@ -29,57 +29,82 @@ class _SplashViewBodyState extends State<SplashViewBody>
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(children: [
-        Center(
-          child: Column(
-            children: [
-              CircularGradiantOpacityContainer(
-                screenHeight: screenHeight,
-                screenWidth: screenWidth,
-                hightRatio: 0.45,
-                widthRatio: 0.65,
-                colorOne: Colors.white,
-                colorTwo: Colors.white,
-                colorOneOpacity: 0.5,
-                colorTwoOpacity: 0,
-                radius: 0.46,
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              AppImages.appbackgroung,
+              fit: BoxFit.cover,
+
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.white.withOpacity(0.4), // top light layer
+                    Colors.white.withOpacity(0.9),
+                    Colors.white.withOpacity(0.999),
+                    Colors.white.withOpacity(0.999),
+                  ]
               )
-            ],
+            ),
           ),
-        ),
-        Center(
-          child: Column(
+          Center(
+            child: Column(
+              children: [
+                CircularGradiantOpacityContainer(
+                  screenHeight: screenHeight,
+                  screenWidth: screenWidth,
+                  hightRatio: 0.45,
+                  widthRatio: 0.65,
+                  colorOne: Colors.white,
+                  colorTwo: Colors.white,
+                  colorOneOpacity: 0.5,
+                  colorTwoOpacity: 0,
+                  radius: 0.46,
+                )
+              ],
+            ),
+          ),
+
+          /// Fading logo animation
+          Center(
+            child: Column(
+              children: [
+                SizedBox(height: screenHeight * 0.30),
+                SizedBox(
+                  width: screenWidth * 0.9,
+                  child: Image.asset(AppImages.appPLogo),
+                ),
+              ],
+            ),
+          ),
+          Column(
             children: [
-              SizedBox(
-                height: screenHeight * 0.20,
-              ),
-              SizedBox(
-                width: screenWidth * 0.55,
-                child: Opacity(
-                    opacity: animationController.value,
-                    child: Image.asset(AppImages.appPLogo)),
+              SizedBox(height: screenHeight * 0.70),
+              const Center(
+                child: CircularProgressIndicator(color: Colors.blue),
               ),
             ],
           ),
-        ),
-        Center(
-          child:  CircularProgressIndicator(
-            color: Colors.blue,
-          ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
   void faddingAnimation() {
     animationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 800));
-    animationController.addListener(() {
-      setState(() {});
-    });
-    animationController.forward();
-    animationController.repeat(reverse: true);
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    )
+      ..addListener(() => setState(() {}))
+      ..forward()
+      ..repeat(reverse: true);
   }
 }
