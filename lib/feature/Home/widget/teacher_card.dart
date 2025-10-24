@@ -5,6 +5,7 @@ class TeacherCard extends StatelessWidget {
   final String specialty;
   final String imagePath;
   final double rating;
+  final String title;
 
   const TeacherCard({
     super.key,
@@ -12,6 +13,7 @@ class TeacherCard extends StatelessWidget {
     required this.specialty,
     required this.imagePath,
     required this.rating,
+    required this.title
   });
 
   @override
@@ -57,25 +59,32 @@ class TeacherCard extends StatelessWidget {
               children: [
                 // Rating Stars
                 Row(
-                  children: List.generate(
-                    5,
-                        (index) => Icon(
-                      Icons.star,
-                      color: index < rating ? Colors.amber : Colors.grey.shade300,
-                      size: width * 0.03,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      name,
+                      style: TextStyle(
+                        fontSize: width * 0.032,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
                     ),
-                  ),
+                    Row(
+                      children: List.generate(
+                        5,
+                            (index) => Icon(
+                          Icons.star,
+                          color: index < rating ? Colors.amber : Colors.grey.shade300,
+                          size: width * 0.03,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
+
                 SizedBox(height: height * 0.005),
 
-                Text(
-                  name,
-                  style: TextStyle(
-                    fontSize: width * 0.042,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
+
 
                 SizedBox(height: height * 0.004),
 
@@ -115,7 +124,7 @@ class TeacherCard extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: height * 0.005),
                       child: Text(
-                        "احجز الجلسة",
+                        title,
                         style: TextStyle(
                           color: const Color(0xFF1E2A4A),
                           fontSize: width * 0.037,

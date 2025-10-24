@@ -88,60 +88,83 @@ class _HomeWidget extends State<HomeWidget>{
               SizedBox(height: height * 0.02),
 
               SizedBox(
-                height: height * 0.28,
+                height: height * 0.34,
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: 3,
                   itemBuilder: (context, index) {
-                    return Container(
-                      width: width * 0.55,
-                      margin: EdgeInsets.only(right: width * 0.04),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-                            child: Image.asset(
-                              AppImages.teacher,
-                              height: height * 0.15,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
+                    return Card(
+                      color: Colors.white,
+                      child: Container(
+                        width: width * 0.55,
+                        margin: EdgeInsets.only(right: width * 0.04),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ClipRRect(
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12),bottom:Radius.circular(12) ),
+                              child: Image.asset(
+                                AppImages.teacher,
+                                height: height * 0.15,
+                                width: double.infinity,
+                                fit: BoxFit.cover,
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(width * 0.03),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'المعلم أحمد بن محمود',
-                                  style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  'برنامج تصحيح التلاوة',
-                                  style: TextStyle(fontSize: width * 0.035, color: Colors.grey[600]),
-                                ),
-                              ],
+                            Padding(
+                              padding: EdgeInsets.all(13),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'المعلم أحمد بن محمود',
+                                        style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.w600),
+                                      ),
+                                      Text(
+                                        'برنامج تصحيح التلاوة',
+                                        style: TextStyle(fontSize: width * 0.035, color: Colors.grey[600]),
+                                      ),
+                                      Text(
+                                        'السعر 2000 ريال',
+                                        style: TextStyle(fontSize: width * 0.035, color: Colors.grey[600]),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: OutlinedButton(
+                                          style: OutlinedButton.styleFrom(
+                                            side: const BorderSide(color: Color(0xFF1E2A4A)),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          onPressed: () {},
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: height * 0.005),
+                                            child: Text(
+                                              "احجز الجلسة",
+                                              style: TextStyle(
+                                                color: const Color(0xFF1E2A4A),
+                                                fontSize: width * 0.037,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
                 ),
               ),
-
               SizedBox(height: height * 0.04),
 
               // Teachers Section
@@ -162,6 +185,7 @@ class _HomeWidget extends State<HomeWidget>{
                 specialty: 'تحفيظ القرآن الكريم',
                 imagePath: AppImages.teacher,
                 rating: 4,
+                title: "احجز الجلسه",
               ),
             ],
           ),

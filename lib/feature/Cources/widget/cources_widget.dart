@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:maen/Core/Utils/app.images.dart';
 
+import '../../Home/widget/teacher_card.dart';
+
 
 class CourcesWidget extends StatefulWidget{
   @override
@@ -100,35 +102,17 @@ class _CourcesWidget extends State<CourcesWidget>{
               ),
               SizedBox(
                 height: height*0.6,
-                child: Padding(
-                  padding: const EdgeInsets.all(13.0),
-                  child: ListView.builder(
-                    padding: EdgeInsets.all(width * 0.05),
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        elevation: 3,
-                        color: Colors.white,
-                        margin: EdgeInsets.only(bottom: height * 0.02),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            radius: width * 0.06,
-                            backgroundImage: const AssetImage(AppImages.teacher),
-                          ),
-                          title: Text('المعلم أحمد بن محمود',
-                              style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.bold)),
-                          subtitle: Text(
-                            'برنامج تصحيح التلاوة\nالتاريخ: 25 أكتوبر 2025\nالوقت: 5:00 مساءً',
-                            style: TextStyle(fontSize: width * 0.033),
-                          ),
-                          trailing: OutlinedButton(
-                            onPressed: () {},
-                            child: const Text('ابدأ الجلسة'),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
+                child: ListView.builder(
+                  itemCount: 3,
+                  itemBuilder: (context, index) {
+                    return TeacherCard(
+                      name: 'المعلمة منى أحمد',
+                      specialty: 'تحفيظ القرآن الكريم',
+                      imagePath: AppImages.teacher,
+                      rating: 4,
+                      title: "ابداء الجلسه",
+                    );
+                  },
                 ),
               ),
             ],

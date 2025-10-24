@@ -44,7 +44,7 @@ class _SignUpWidget extends State<SignUpWidget>{
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.white.withOpacity(0.4), // top light layer
+                        Colors.white.withOpacity(0.88), // top light layer
                         Colors.white.withOpacity(0.9),
                         Colors.white.withOpacity(0.999),
                         Colors.white.withOpacity(0.999),

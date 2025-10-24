@@ -65,7 +65,7 @@ class _OnBoardWidget extends State<OnBoardWidget>{
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Colors.white.withOpacity(0.4), // top light layer
+                      Colors.white.withOpacity(0.99), // top light layer
                       Colors.white.withOpacity(0.9),
                       Colors.white.withOpacity(0.999),
                       Colors.white.withOpacity(0.999),
