@@ -12,22 +12,21 @@ class SuraDetailsScreen extends StatefulWidget {
 }
 
 class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
-  List<String> verses = [];
+  String suraText = ''; // 🔹 now store concatenated verses instead of list
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments as SuraDetailsArgs;
+    final size = MediaQuery.of(context).size; // 🔹 get screen dimensions
 
-    if (verses.isEmpty) {
+    if (suraText.isEmpty) {
       loadFile(args.index);
     }
 
-    // Group verses so that each "page" has multiple verses (e.g., 5)
-    final int versesPerPage = 5; // 👈 change this number as needed
-    final int pageCount = (verses.length / versesPerPage).ceil();
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         toolbarHeight: 50,
         title: Text(
           args.suraEnName,
@@ -40,55 +39,56 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
           children: [
             Image.asset(
               'assets/images/sura_ditails_screen.png',
-              height: double.infinity,
-              width: double.infinity,
+              height: size.height,
+              width: size.width,
               fit: BoxFit.fill,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(30.0),
-                  child: Text(
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: size.width * 0.05,
+                vertical: size.height * 0.02,
+              ),
+              child: Column(
+                children: [
+                  Text(
                     args.suraArName,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headlineLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headlineLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                ),
-                Expanded(
-                  child: verses.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
-                      : PageView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: pageCount,
-                    itemBuilder: (context, pageIndex) {
-                      final start = pageIndex * versesPerPage;
-                      final end = (start + versesPerPage > verses.length)
-                          ? verses.length
-                          : start + versesPerPage;
-
-                      final pageVerses = verses.sublist(start, end);
-
-                      return SingleChildScrollView(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: pageVerses.asMap().entries.map((entry) {
-                            final i = entry.key + start;
-                            final verse = entry.value;
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 3.0),
-                              child: itemsuracontent(
-                                content: verse,
-                                index: i,
-                              ),
-                            );
-                          }).toList(),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: suraText.isEmpty
+                        ? const Center(child: CircularProgressIndicator())
+                        : SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.all(8),
+                      child: Container(
+                        width: size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.8),
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                      );
-                    },
+                        padding: const EdgeInsets.all(12),
+                        child: Text(
+                          suraText,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                            height: 1.8,
+                            fontSize: size.width * 0.045,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -96,10 +96,21 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
     );
   }
 
+  /// 🔹 Load and concatenate verses from file
   void loadFile(int index) async {
     final content = await rootBundle.loadString('assets/Suras/${index + 1}.txt');
     setState(() {
-      verses = content.split('\n').where((line) => line.trim().isNotEmpty).toList();
+      final lines = content
+          .split('\n')
+          .where((line) => line.trim().isNotEmpty)
+          .toList();
+
+      // Concatenate all verses with number at the end (e.g. (1), (2), ...)
+      suraText = lines.asMap().entries.map((entry) {
+        final i = entry.key + 1;
+        final verse = entry.value.trim();
+        return "$verse ﴿$i﴾";
+      }).join(" "); // Join all verses into one long text
     });
   }
 }

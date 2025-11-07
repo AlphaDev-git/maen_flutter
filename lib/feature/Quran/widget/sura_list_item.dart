@@ -30,15 +30,15 @@ class sura_list_item extends StatelessWidget {
               Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(suraEn,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  Text(suraAr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                       color:const Color(0xFF1E2A4A)
                   ),),
-                  Text('$ayaNum Verses',style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  Text('$ayaNum ايات',style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: const Color(0xFF1E2A4A)
                   ),),
                 ],
               ),
-              Text(suraAr,style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              Text(suraEn,style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: const Color(0xFF1E2A4A)
               ),),
             ],

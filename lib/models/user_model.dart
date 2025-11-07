@@ -1,14 +1,14 @@
 class UserModel {
-  final String id;
-  final String name;
-  final String email;
-  final String firebaseUid;
-  final String role;
-  final String status;
-  final String language;
-  final String currency;
-  final String createdAt;
-  final String updatedAt;
+   String id;
+   String name;
+   String email;
+   String firebaseUid;
+   String role;
+   String status;
+   String language;
+   String currency;
+   String createdAt;
+   String updatedAt;
 
   UserModel({
     required this.id,
