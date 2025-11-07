@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maen/feature/About/view/about_view.dart';
+import 'package:maen/feature/AskedQuestions/view/asked_question_view.dart';
 import 'package:maen/feature/AuthScreen/function/auth_function.dart';
 import 'package:maen/feature/CallUs/view/call_us_view.dart';
+import 'package:maen/feature/Hadith/view/hadith_view.dart';
 import 'package:maen/feature/Language/view/language_view.dart';
 import 'package:maen/feature/PrivacyPolicy/view/privacy_policy_view.dart';
 import 'package:maen/feature/TermsOfUses/view/terms_of_uses_view.dart';
 import 'package:maen/feature/profile/view/profile_view.dart';
+import 'package:maen/feature/sebha/view/sebha_view.dart';
 import 'package:maen/models/user_model.dart';
 import '../../../Core/Utils/app.images.dart';
 
@@ -71,8 +74,19 @@ class _SettingWidget extends State<SettingWidget>{
                       _settingsItem(Icons.person, 'البيانات الشخصية', () {
                         Get.to(ProfileView(widget.userModel),duration: Duration(seconds: 1),transition: Transition.cupertino);
                       }),
+                      SizedBox(height: height*0.02,),
                       _settingsItem(Icons.language, 'اللغة', () {
                         Get.to(LanguageView(),duration: Duration(seconds: 1),transition: Transition.cupertino);
+
+                      }),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.cached_outlined, 'السبحة', () {
+                        Get.to(SebhaView(),duration: Duration(seconds: 1),transition: Transition.cupertino);
+
+                      }),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.book, 'حديث', () {
+                        Get.to(HadithView(),duration: Duration(seconds: 1),transition: Transition.cupertino);
 
                       }),
                       SizedBox(height: height*0.02,),
@@ -87,7 +101,9 @@ class _SettingWidget extends State<SettingWidget>{
 
                       }),
                       SizedBox(height: height*0.02,),
-                      _settingsItem(Icons.question_mark, 'الاسئلة الشائعة', () {}),
+                      _settingsItem(Icons.question_mark, 'الاسئلة الشائعة', () {
+                        Get.to(AskedQuestionView(),transition: Transition.cupertinoDialog,duration: Duration(seconds: 1));
+                      }),
                       SizedBox(height: height*0.02,),
                       _settingsItem(Icons.call, 'تواصل معنا', () {
                         Get.to(CallUsView(),duration: Duration(seconds: 1),transition: Transition.cupertino);

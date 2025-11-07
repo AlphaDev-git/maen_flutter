@@ -3,9 +3,9 @@ import 'package:maen/Core/Utils/app.images.dart';
 import 'package:maen/feature/Home/widget/teacher_card.dart';
 import 'package:maen/models/user_model.dart';
 
+import '../../Cources/widget/cource_card_widget.dart';
 
-
-class HomeWidget extends StatefulWidget{
+class HomeWidget extends StatefulWidget {
   UserModel userModel;
   HomeWidget(this.userModel);
   @override
@@ -14,8 +14,7 @@ class HomeWidget extends StatefulWidget{
   }
 }
 
-
-class _HomeWidget extends State<HomeWidget>{
+class _HomeWidget extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -26,7 +25,10 @@ class _HomeWidget extends State<HomeWidget>{
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: height * 0.03),
+          padding: EdgeInsets.symmetric(
+            horizontal: width * 0.05,
+            vertical: height * 0.03,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -45,8 +47,12 @@ class _HomeWidget extends State<HomeWidget>{
                       decoration: InputDecoration(
                         hintText: 'بحث...',
                         prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        contentPadding: EdgeInsets.symmetric(vertical: height * 0.01),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: height * 0.01,
+                        ),
                       ),
                     ),
                   ),
@@ -79,88 +85,32 @@ class _HomeWidget extends State<HomeWidget>{
                 children: [
                   Text(
                     ' البرامج',
-                    style: TextStyle(fontSize: width * 0.05,
-                        fontWeight: FontWeight.bold,color: Color(0xFF1E2A4A)),
+                    style: TextStyle(
+                      fontSize: width * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E2A4A),
+                    ),
                   ),
                   Text(
                     'المزيد',
-                    style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
 
               SizedBox(height: height * 0.02),
-
               SizedBox(
                 height: height * 0.34,
-                child: ListView.builder(
+                child: ListView(
                   scrollDirection: Axis.horizontal,
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      color: Color(0xFF1E2A4A),
-                      child: Container(
-                        width: width * 0.55,
-                        margin: EdgeInsets.only(right: width * 0.04),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ClipRRect(
-                              borderRadius: const BorderRadius.vertical(top: Radius.circular(12),bottom:Radius.circular(12) ),
-                              child: Image.asset(
-                                AppImages.teacher,
-                                height: height * 0.15,
-                                width: double.infinity,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(13),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'تصحيح التلاوة',
-                                        style: TextStyle(fontSize: width * 0.08,
-                                            fontWeight: FontWeight.bold,color: Colors.white),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: OutlinedButton(
-                                          style: OutlinedButton.styleFrom(
-                                            side:  BorderSide(color: Colors.white),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                          ),
-                                          onPressed: () {},
-                                          child: Padding(
-                                            padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: height * 0.005),
-                                            child: Text(
-                                              "انشئ خطتك الان",
-                                              style: TextStyle(
-                                                color:  Colors.white,
-                                                fontSize: width * 0.037,
-                                                fontWeight: FontWeight.bold
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                  children: [
+                    CourceCardWidget(title: "انشئ خطتك مع معين",Images: "",subTitle: "ابداء الان",),
+                    CourceCardWidget(title: "تصحيح التلاوة",Images: "",subTitle: "انشئ خطتك الان",),
+                    CourceCardWidget(title: "الجفظ والمراجعة",Images: "",subTitle: "انشئ خطتك الان",),
+                  ],
                 ),
               ),
               SizedBox(height: height * 0.03),
@@ -171,12 +121,18 @@ class _HomeWidget extends State<HomeWidget>{
                 children: [
                   Text(
                     ' الباقات',
-                    style: TextStyle(fontSize: width * 0.05,
-                        fontWeight: FontWeight.bold,color: Color(0xFF1E2A4A)),
+                    style: TextStyle(
+                      fontSize: width * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E2A4A),
+                    ),
                   ),
                   Text(
                     'المزيد',
-                    style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
@@ -211,7 +167,10 @@ class _HomeWidget extends State<HomeWidget>{
                   ),
                   Text(
                     'المزيد',
-                    style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
+                    style: TextStyle(
+                      fontSize: width * 0.04,
+                      color: Colors.grey[600],
+                    ),
                   ),
                 ],
               ),
@@ -235,7 +194,7 @@ class _HomeWidget extends State<HomeWidget>{
               //   ),
               // ),
               SizedBox(
-                height: height*0.2,
+                height: height * 0.2,
                 child: ListView(
                   children: [
                     TeacherCard(

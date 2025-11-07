@@ -18,43 +18,49 @@ class MainScreenWidget extends StatefulWidget {
 
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   UserModel? _user;
+
   @override
   void initState() {
     super.initState();
     getUser();
   }
 
-  void getUser()async{
-    var responce=await getCurrentUser();
-    if(responce!=null){
-      _user=UserModel.fromJson(responce);
-      setState(() {
-        _user;
-      });
+  void getUser() async {
+    var response = await getCurrentUser();
+    if (response != null) {
+      _user = UserModel.fromJson(response);
+      setState(() {});
     }
   }
+
   int _currentIndex = 0;
+
   @override
   Widget build(BuildContext context) {
-     List<Widget> _screens =  [];
-     if(_user!=null){
-       setState(() {
-         _screens=[
-           HomeView(_user!),
-           QuranView(_user!),
-           HadithView(),
-           SebhaView(),
-           CourcesView(_user!),
-           SettingView(_user!),
-         ];
-       });
-     }
-    return _user!=null? Directionality(
+    List<Widget> _screens = [];
+    if (_user != null) {
+      _screens = [
+        HomeView(_user!),
+        QuranView(_user!),
+        CourcesView(_user!),
+        SettingView(_user!),
+      ];
+    }
+
+    return _user != null
+        ? Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        body: _screens[_currentIndex],
+        // ✅ Use full screen and behind status bar
+        extendBodyBehindAppBar: true,
+        body: SafeArea(
+          top: true, // ensure status bar is visible
+          bottom: true,
+          child: _screens[_currentIndex],
+        ),
         bottomNavigationBar: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          borderRadius:
+          const BorderRadius.vertical(top: Radius.circular(16)),
           child: BottomNavigationBar(
             currentIndex: _currentIndex,
             onTap: (index) => setState(() => _currentIndex = index),
@@ -73,16 +79,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.menu_book_outlined),
-
                 label: 'القرآن',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.book),
-                label: 'حديث',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.cached_outlined),
-                label: 'سبحة',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.chair_alt_outlined),
@@ -96,7 +93,8 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           ),
         ),
       ),
-    ):Scaffold(
+    )
+        : const Scaffold(
       backgroundColor: Colors.white,
       body: Center(child: CircularProgressIndicator()),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'dart:math' as math;
 
 import 'package:maen/Core/Utils/app.images.dart';
@@ -16,6 +17,10 @@ class _SebhaHomeState extends State<SebhaHome>
   String tasbeehText = 'سبحان الله';
 
   late AnimationController _controller;
+  late Animation<double> _glowAnimation;
+
+  final Color mainColor = const Color(0xFF1E2A4A);
+  final Color textColor = Colors.white;
 
   @override
   void initState() {
@@ -23,6 +28,9 @@ class _SebhaHomeState extends State<SebhaHome>
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
+    );
+    _glowAnimation = Tween<double>(begin: 0.0, end: 10.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
   }
 
@@ -61,95 +69,171 @@ class _SebhaHomeState extends State<SebhaHome>
     });
   }
 
+  void resetSebha() {
+    setState(() {
+      count = 0;
+      totalCount = 0;
+      tasbeehText = 'سبحان الله';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        // ✅ Scrollable to prevent overflow
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // ✅ Centered header image
-                Center(
-                  child: Image.asset(
-                    AppImages.appPLogo,
-                    height: 80,
-                    fit: BoxFit.contain,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  'سَبِّحِ اسْمَ رَبِّكَ الأعلى',
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge
-                      ?.copyWith(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 30),
-                Image.asset(
-                  'assets/images/deal.png',
-                  height: 120,
-                  fit: BoxFit.contain,
-                ),
-                const SizedBox(height: 20),
-
-                // ✅ Main Sebha section
-                InkWell(
-                  onTap: incrementCounter,
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      AnimatedBuilder(
-                        animation: _controller,
-                        builder: (context, child) {
-                          return Transform.rotate(
-                            angle: _controller.value * 2 * math.pi,
-                            child: child,
-                          );
-                        },
-                        child: Image.asset(
-                          'assets/images/SebhaBody.png',
-                          height: 220,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            tasbeehText,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          Text(
-                            '$count',
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-              ],
-            ),
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: mainColor.withOpacity(0.3),
+        elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'السبحة',
+          style: TextStyle(
+            color: textColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
           ),
+        ),
+        leading: IconButton(onPressed: (){
+          Get.back();
+        }, icon: Icon(Icons.arrow_back,color: Colors.white,)),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh, color: Colors.white),
+            onPressed: resetSebha,
+            tooltip: 'إعادة التصفير',
+          ),
+        ],
+      ),
+      body: SizedBox(
+        height: size.height,
+        width: size.width,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            // 🌙 Background
+            Container(
+              height: size.height,
+              width: size.width,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    mainColor,
+                    mainColor.withOpacity(0.85),
+                    Colors.black.withOpacity(0.9),
+                  ],
+                ),
+              ),
+            ),
+
+            // 🌿 Main Sebha
+            GestureDetector(
+              onTap: incrementCounter,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (context, child) {
+                      return Transform.rotate(
+                        angle: _controller.value * 2 * math.pi,
+                        child: child,
+                      );
+                    },
+                    child: Image.asset(
+                      'assets/images/SebhaBody.png',
+                      height: size.width * 0.8,
+                      fit: BoxFit.contain,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                  AnimatedBuilder(
+                    animation: _glowAnimation,
+                    builder: (context, _) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.3),
+                              blurRadius: _glowAnimation.value * 3,
+                              spreadRadius: _glowAnimation.value,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AnimatedSwitcher(
+                              duration: const Duration(milliseconds: 400),
+                              transitionBuilder: (child, anim) =>
+                                  FadeTransition(opacity: anim, child: child),
+                              child: Text(
+                                tasbeehText,
+                                key: ValueKey<String>(tasbeehText),
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  color: textColor,
+                                  fontWeight: FontWeight.bold,
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.white.withOpacity(0.5),
+                                      blurRadius: 10,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              '$count',
+                              style: TextStyle(
+                                fontSize: 36,
+                                color: textColor,
+                                fontWeight: FontWeight.bold,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.white.withOpacity(0.7),
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+            // 🌙 Verse and logo bottom
+            Positioned(
+              bottom: size.height * 0.05,
+              child: Column(
+                children: [
+                  Image.asset(
+                    AppImages.appPLogo,
+                    height: size.height * 0.07,
+                    color: Colors.white,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    'سَبِّحِ اسْمَ رَبِّكَ الأعلى',
+                    style: TextStyle(
+                      color: textColor.withOpacity(0.9),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

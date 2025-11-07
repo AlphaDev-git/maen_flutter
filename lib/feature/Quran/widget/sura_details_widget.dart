@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'item_sura_content.dart';
 
 class SuraDetailsScreen extends StatefulWidget {
   static const String routeName = 'sura_details_screen';
@@ -12,14 +11,16 @@ class SuraDetailsScreen extends StatefulWidget {
 }
 
 class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
-  String suraText = ''; // 🔹 now store concatenated verses instead of list
+  List<List<String>> pages = []; // Each page contains a list of ayat
+  final PageController _pageController = PageController();
+  int currentPage = 0;
 
   @override
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)?.settings.arguments as SuraDetailsArgs;
-    final size = MediaQuery.of(context).size; // 🔹 get screen dimensions
+    final size = MediaQuery.of(context).size;
 
-    if (suraText.isEmpty) {
+    if (pages.isEmpty) {
       loadFile(args.index);
     }
 
@@ -34,15 +35,18 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
         ),
       ),
       body: Directionality(
-        textDirection: TextDirection.rtl,
+        textDirection: TextDirection.rtl, // for Arabic reading and swiping
         child: Stack(
           children: [
+            // 🔹 Background
             Image.asset(
               'assets/images/sura_ditails_screen.png',
               height: size.height,
               width: size.width,
               fit: BoxFit.fill,
             ),
+
+            // 🔹 Page content
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: size.width * 0.05,
@@ -59,34 +63,35 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
                         ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
+
+                  // 🔹 PageView for grouped ayat
                   Expanded(
-                    child: suraText.isEmpty
+                    child: pages.isEmpty
                         ? const Center(child: CircularProgressIndicator())
-                        : SingleChildScrollView(
+                        : PageView.builder(
+                      controller: _pageController,
                       physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.all(8),
-                      child: Container(
-                        width: size.width,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        padding: const EdgeInsets.all(12),
-                        child: Text(
-                          suraText,
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(
-                            height: 1.8,
-                            fontSize: size.width * 0.045,
-                            color: Colors.black87,
-                          ),
+                      onPageChanged: (i) => setState(() => currentPage = i),
+                      itemCount: pages.length,
+                      itemBuilder: (context, index) {
+                        return _buildPage(context, pages[index], index, size);
+                      },
+                    ),
+                  ),
+
+                  // 🔹 Page indicator
+                  if (pages.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Text(
+                        "${currentPage + 1} / ${pages.length}",
+                        style: TextStyle(
+                          fontSize: size.width * 0.04,
+                          color: Colors.grey[700],
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -96,21 +101,79 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
     );
   }
 
-  /// 🔹 Load and concatenate verses from file
+  /// 🔹 Build each page that contains multiple ayat
+  Widget _buildPage(BuildContext context, List<String> ayat, int pageNumber, Size size) {
+    return Center(
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(
+          horizontal: size.width * 0.02,
+          vertical: size.height * 0.01,
+        ),
+        padding: EdgeInsets.all(size.width * 0.05),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              spreadRadius: 2,
+              offset: const Offset(2, 4),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Text(
+            ayat.join(" "), // Join verses in this page
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              fontSize: size.width * 0.05,
+              height: 1.8,
+              color: Colors.black87,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// 🔹 Load sura file and split into pages (7–12 ayat per page)
   void loadFile(int index) async {
     final content = await rootBundle.loadString('assets/Suras/${index + 1}.txt');
-    setState(() {
-      final lines = content
-          .split('\n')
-          .where((line) => line.trim().isNotEmpty)
-          .toList();
+    final lines = content
+        .split('\n')
+        .where((line) => line.trim().isNotEmpty)
+        .toList();
 
-      // Concatenate all verses with number at the end (e.g. (1), (2), ...)
-      suraText = lines.asMap().entries.map((entry) {
-        final i = entry.key + 1;
-        final verse = entry.value.trim();
-        return "$verse ﴿$i﴾";
-      }).join(" "); // Join all verses into one long text
+    List<String> formattedAyat = [];
+    for (int i = 0; i < lines.length; i++) {
+      formattedAyat.add("${lines[i].trim()} ﴿${i + 1}﴾");
+    }
+
+    // 🔹 Dynamic grouping logic: 7 to 12 ayat per page
+    List<List<String>> grouped = [];
+    int ayatPerPage;
+
+    if (formattedAyat.length <= 25) {
+      ayatPerPage = 7; // short suras
+    } else if (formattedAyat.length <= 80) {
+      ayatPerPage = 10; // medium suras
+    } else {
+      ayatPerPage = 12; // long suras
+    }
+
+    for (int i = 0; i < formattedAyat.length; i += ayatPerPage) {
+      grouped.add(formattedAyat.sublist(
+        i,
+        i + ayatPerPage > formattedAyat.length
+            ? formattedAyat.length
+            : i + ayatPerPage,
+      ));
+    }
+
+    setState(() {
+      pages = grouped;
     });
   }
 }

@@ -3,30 +3,61 @@ import 'package:get/get.dart';
 import 'package:maen/feature/Quran/widget/sura_details_widget.dart';
 import 'package:maen/feature/Quran/widget/sura_list_item.dart';
 import 'package:maen/models/user_model.dart';
-
 import '../../../Core/Utils/app.images.dart';
 import '../quran_const.dart';
 
 class QuranWidget extends StatefulWidget {
-  UserModel userModel;
-  QuranWidget(this.userModel);
+  final UserModel userModel;
+  const QuranWidget(this.userModel, {super.key});
+
   @override
-  State<StatefulWidget> createState() {
-    return _QuranWidget();
-  }
+  State<QuranWidget> createState() => _QuranWidgetState();
 }
 
-class _QuranWidget extends State<QuranWidget> {
+class _QuranWidgetState extends State<QuranWidget> {
   bool isSurahView = false;
   int selectedSurah = 0;
 
-  final List<Map<String, dynamic>> surahs = [
-    {'name': 'الفاتحة', 'verses': 7, 'type': 'مكية'},
-    {'name': 'البقرة', 'verses': 286, 'type': 'مدنية'},
-    {'name': 'آل عمران', 'verses': 200, 'type': 'مدنية'},
-    {'name': 'النساء', 'verses': 176, 'type': 'مدنية'},
-    {'name': 'المائدة', 'verses': 120, 'type': 'مدنية'},
-  ];
+  final TextEditingController _searchController = TextEditingController();
+  List<Map<String, String>> filteredSurahs = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _initSurahs();
+    _searchController.addListener(_onSearchChanged);
+  }
+
+  void _initSurahs() {
+    filteredSurahs = List.generate(arabicAuranSuras.length, (index) {
+      return {
+        "ar": arabicAuranSuras[index],
+        "en": englishQuranSurahs[index],
+        "aya": AyaNumber[index],
+      };
+    });
+  }
+
+  void _onSearchChanged() {
+    final query = _searchController.text.trim();
+    if (query.isEmpty) {
+      _initSurahs();
+    } else {
+      setState(() {
+        filteredSurahs = List.generate(arabicAuranSuras.length, (index) {
+          return {
+            "ar": arabicAuranSuras[index],
+            "en": englishQuranSurahs[index],
+            "aya": AyaNumber[index],
+          };
+        }).where((sura) {
+          return sura["ar"]!.contains(query) ||
+              sura["en"]!.toLowerCase().contains(query.toLowerCase());
+        }).toList();
+      });
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +68,7 @@ class _QuranWidget extends State<QuranWidget> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+        body: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: width * 0.05,
             vertical: height * 0.03,
@@ -51,9 +82,7 @@ class _QuranWidget extends State<QuranWidget> {
                   isSurahView
                       ? IconButton(
                     onPressed: () {
-                      setState(() {
-                        isSurahView = !isSurahView;
-                      });
+                      setState(() => isSurahView = false);
                     },
                     icon: const Icon(Icons.arrow_back),
                   )
@@ -64,14 +93,19 @@ class _QuranWidget extends State<QuranWidget> {
                   SizedBox(
                     width: width * 0.7,
                     child: TextField(
+                      controller: _searchController,
+                      textAlign: TextAlign.center,
                       decoration: InputDecoration(
-                        hintText: 'بحث...',
+                        hintText: 'بحث عن سورة...',
                         prefixIcon: const Icon(Icons.search),
+                        filled: true,
+                        fillColor: Colors.grey[200],
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
                         ),
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: height * 0.01,
+                          vertical: height * 0.012,
                         ),
                       ),
                     ),
@@ -79,12 +113,9 @@ class _QuranWidget extends State<QuranWidget> {
                 ],
               ),
               SizedBox(height: height * 0.03),
-
-              // View section
-              SizedBox(
-                height: height * 0.9,
+              Expanded(
                 child: Padding(
-                  padding: EdgeInsets.all(width * 0.04),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.02),
                   child: isSurahView
                       ? _buildSurahView(width, height)
                       : _buildIndexView(width, height),
@@ -98,38 +129,42 @@ class _QuranWidget extends State<QuranWidget> {
   }
 
   Widget _buildIndexView(double width, double height) {
-    // ✅ FIXED: removed Expanded (it caused ParentDataWidget error)
     return ListView.separated(
-      separatorBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Divider(
-            color: Colors.black,
-            thickness: 2,
-          ),
-        );
-      },
+      physics: const BouncingScrollPhysics(),
+      itemCount: filteredSurahs.length + 1, // add extra space at end
+      separatorBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Divider(
+          color: Colors.black,
+          thickness: 1.5,
+        ),
+      ),
       itemBuilder: (context, index) {
+        if (index == filteredSurahs.length) {
+          // Add bottom space so last item is fully visible
+          return const SizedBox(height: 80);
+        }
+
+        final sura = filteredSurahs[index];
         return InkWell(
           onTap: () {
             Get.to(
               SuraDetailsScreen(),
               arguments: SuraDetailsArgs(
                 index: index,
-                suraArName: arabicAuranSuras[index],
-                suraEnName: englishQuranSurahs[index],
+                suraArName: sura["ar"]!,
+                suraEnName: sura["en"]!,
               ),
             );
           },
           child: sura_list_item(
             index: index + 1,
-            ayaNum: AyaNumber[index],
-            suraAr: arabicAuranSuras[index],
-            suraEn: englishQuranSurahs[index],
+            suraAr: sura["ar"]!,
+            suraEn: sura["en"]!,
+            ayaNum: sura["aya"]!,
           ),
         );
       },
-      itemCount: AyaNumber.length,
     );
   }
 
@@ -138,7 +173,7 @@ class _QuranWidget extends State<QuranWidget> {
       child: Column(
         children: [
           Text(
-            'سورة ${surahs[selectedSurah]['name']}',
+            'سورة ${filteredSurahs[selectedSurah]['ar']}',
             style: TextStyle(
               fontSize: width * 0.06,
               fontWeight: FontWeight.bold,
@@ -171,5 +206,11 @@ class _QuranWidget extends State<QuranWidget> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

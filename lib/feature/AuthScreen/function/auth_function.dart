@@ -68,7 +68,7 @@ Future<void> CreateStudentAccount(BuildContext context,String name,String email,
         password: pass,
         passwordConfirm: conPass,
         role: "student",
-        authTokenOrUserId: token.toString());
+        authTokenOrUserId: _auth.currentUser!.uid);
     }).whenComplete((){
       Get.offAll(SplashView(),transition: Transition.circularReveal,duration: Duration(seconds: 1));
     });

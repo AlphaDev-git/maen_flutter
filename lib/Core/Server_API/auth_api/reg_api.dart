@@ -20,8 +20,7 @@ class AuthService {
     try {
       final uri = Uri.parse(baseUrl);
       final request = http.MultipartRequest('POST', uri);
-      request.headers['Authorization'] =
-      useBearer ? 'Bearer $authTokenOrUserId' : authTokenOrUserId;
+      request.headers['x-firebase-uid'] =authTokenOrUserId;
       request.headers['Accept'] = 'application/json';
       request.fields['name'] = name;
       request.fields['email'] = email;

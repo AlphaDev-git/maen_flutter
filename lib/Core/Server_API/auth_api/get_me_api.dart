@@ -12,15 +12,16 @@ Future<Map<String, dynamic>?> getCurrentUser() async {
     if (user == null) {
       return null;
     }
-    final token = await user.getIdToken(true);
     final url = Uri.parse('${baseUrl}auth/me');
     final response = await http.get(
       url,
       headers: {
-        'Authorization': 'Bearer $token',
         'Accept': 'application/json',
+        'x-firebase-uid': user.uid,
+        'Content-Type': 'application/json',
       },
     );
+    print(response.body);
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       return data['user']; // return only the user object
