@@ -1,6 +1,12 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import '../../../Core/Server_API/auth_api/reg_api.dart';
 import '../../../Core/Utils/app.images.dart';
+import '../../../Core/Widgets/common_widgets.dart';
+import '../function/auth_function.dart';
 import 'buildTextField.dart';
 
 
@@ -19,6 +25,7 @@ class _SignUpWidget extends State<SignUpWidget>{
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
   String gender = "male";
+  File? _image;
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -62,18 +69,26 @@ class _SignUpWidget extends State<SignUpWidget>{
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Profile image placeholder
-                    Center(
-                      child: Container(
-                        width: width * 0.35,
-                        height: width * 0.35,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.blueGrey, width: 1.5),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.image_outlined, size: 40, color: Colors.blueGrey),
+                    InkWell(
+                      child: Center(
+                        child: Container(
+                          width: width * 0.35,
+                          height: width * 0.35,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.blueGrey, width: 1.5),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child:_image==null? const Center(
+                            child: Icon(Icons.image_outlined, size: 40, color: Colors.blueGrey),
+                          ):Image.file(
+                            _image!,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
+                      onTap: (){
+                        _pickImage();
+                      },
                     ),
                     SizedBox(height: height * 0.04),
                     buildTextField('الاسم الكامل', 'يوسف محمود احمد محمد', nameController),
@@ -151,7 +166,42 @@ class _SignUpWidget extends State<SignUpWidget>{
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: (){
+                          if(_image!=null){
+                            if(nameController.text!=""){
+                              if(emailController.text!=""){
+                                if(passwordController.text!=""){
+                                  if(confirmPasswordController.text!=""){
+                                    if(passwordController.text==confirmPasswordController.text){
+                                      CreateStudentAccount(
+                                          context,nameController.text,emailController.text,
+                                          passwordController.text,confirmPasswordController.text,_image
+                                      );
+                                    }
+                                    else{
+                                      showErrorDialog(context," كلمة السر غير متطابقة  ");
+                                    }
+                                  }
+                                  else{
+                                    showErrorDialog(context,"برجاء ادحال تاكيد كلمة السر ");
+                                  }
+                                }
+                                else{
+                                  showErrorDialog(context,"برجاء ادحال كلمة السر ");
+                                }
+                              }
+                              else{
+                                showErrorDialog(context,"برجاء ادحال البريد الالكتروني");
+                              }
+                            }
+                            else{
+                              showErrorDialog(context,"برجاء ادخال الاسم");
+                            }
+                          }
+                          else{
+                            showErrorDialog(context,"برجاء اختيار صورة");
+                          }
+                        },
                         child: Text(
                           'إنشاء حساب',
                           style: TextStyle(
@@ -170,7 +220,30 @@ class _SignUpWidget extends State<SignUpWidget>{
       ),
     );
   }
+  void _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  // Reusable text field builder
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Image selection simulated!'),
+          backgroundColor: Color(0xFF07933E),
+        ),
+      );
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Image Not selection simulated!'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
 
+
+  }
 }

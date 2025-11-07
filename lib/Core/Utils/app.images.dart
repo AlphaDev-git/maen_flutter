@@ -7,4 +7,5 @@ abstract class AppImages {
   static const String banner= "lib/core/Utils/assets/Images/banner.png";
   static const String teacher= "lib/core/Utils/assets/Images/teacher.png";
   static const String user= "lib/core/Utils/assets/Images/user.png";
+  static const String font= "lib/core/Utils/assets/Images/ExpoArabic-Book.ttf";
 }

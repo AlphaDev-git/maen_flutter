@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:maen/Core/Server_API/auth_api/get_me_api.dart';
 import 'package:maen/feature/Cources/view/cources_view.dart';
+import 'package:maen/feature/Hadith/view/hadith_view.dart';
 import 'package:maen/feature/Home/view/home_view.dart';
 import 'package:maen/feature/Quran/view/quran_view.dart';
 import 'package:maen/feature/Setting/view/setting_view.dart';
+import 'package:maen/feature/sebha/view/sebha_view.dart';
+
+import '../../../models/user_model.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({super.key});
@@ -12,18 +17,39 @@ class MainScreenWidget extends StatefulWidget {
 }
 
 class _MainScreenWidgetState extends State<MainScreenWidget> {
+  UserModel? _user;
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  void getUser()async{
+    var responce=await getCurrentUser();
+    if(responce!=null){
+      _user=UserModel.fromJson(responce);
+      setState(() {
+        _user;
+      });
+    }
+  }
   int _currentIndex = 0;
-
-  final List<Widget> _screens =  [
-    HomeView(),
-    QuranView(),
-    CourcesView(),
-    SettingView(),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    return Directionality(
+     List<Widget> _screens =  [];
+     if(_user!=null){
+       setState(() {
+         _screens=[
+           HomeView(_user!),
+           QuranView(_user!),
+           HadithView(),
+           SebhaView(),
+           CourcesView(_user!),
+           SettingView(_user!),
+         ];
+       });
+     }
+    return _user!=null? Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         body: _screens[_currentIndex],
@@ -47,7 +73,16 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.menu_book_outlined),
+
                 label: 'القرآن',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.book),
+                label: 'حديث',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.cached_outlined),
+                label: 'سبحة',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.chair_alt_outlined),
@@ -61,6 +96,9 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           ),
         ),
       ),
+    ):Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }

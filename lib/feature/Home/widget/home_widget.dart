@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:maen/Core/Utils/app.images.dart';
 import 'package:maen/feature/Home/widget/teacher_card.dart';
+import 'package:maen/models/user_model.dart';
 
 
 
 class HomeWidget extends StatefulWidget{
+  UserModel userModel;
+  HomeWidget(this.userModel);
   @override
   State<StatefulWidget> createState() {
     return _HomeWidget();
@@ -75,11 +78,12 @@ class _HomeWidget extends State<HomeWidget>{
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'أفضل البرامج',
-                    style: TextStyle(fontSize: width * 0.05, fontWeight: FontWeight.bold),
+                    ' البرامج',
+                    style: TextStyle(fontSize: width * 0.05,
+                        fontWeight: FontWeight.bold,color: Color(0xFF1E2A4A)),
                   ),
                   Text(
-                    'شاهد الكل',
+                    'المزيد',
                     style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
                   ),
                 ],
@@ -94,7 +98,7 @@ class _HomeWidget extends State<HomeWidget>{
                   itemCount: 3,
                   itemBuilder: (context, index) {
                     return Card(
-                      color: Colors.white,
+                      color: Color(0xFF1E2A4A),
                       child: Container(
                         width: width * 0.55,
                         margin: EdgeInsets.only(right: width * 0.04),
@@ -120,22 +124,15 @@ class _HomeWidget extends State<HomeWidget>{
                                     crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        'المعلم أحمد بن محمود',
-                                        style: TextStyle(fontSize: width * 0.04, fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                        'برنامج تصحيح التلاوة',
-                                        style: TextStyle(fontSize: width * 0.035, color: Colors.grey[600]),
-                                      ),
-                                      Text(
-                                        'السعر 2000 ريال',
-                                        style: TextStyle(fontSize: width * 0.035, color: Colors.grey[600]),
+                                        'تصحيح التلاوة',
+                                        style: TextStyle(fontSize: width * 0.08,
+                                            fontWeight: FontWeight.bold,color: Colors.white),
                                       ),
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: OutlinedButton(
                                           style: OutlinedButton.styleFrom(
-                                            side: const BorderSide(color: Color(0xFF1E2A4A)),
+                                            side:  BorderSide(color: Colors.white),
                                             shape: RoundedRectangleBorder(
                                               borderRadius: BorderRadius.circular(8),
                                             ),
@@ -144,10 +141,11 @@ class _HomeWidget extends State<HomeWidget>{
                                           child: Padding(
                                             padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: height * 0.005),
                                             child: Text(
-                                              "احجز الجلسة",
+                                              "انشئ خطتك الان",
                                               style: TextStyle(
-                                                color: const Color(0xFF1E2A4A),
+                                                color:  Colors.white,
                                                 fontSize: width * 0.037,
+                                                fontWeight: FontWeight.bold
                                               ),
                                             ),
                                           ),
@@ -165,28 +163,92 @@ class _HomeWidget extends State<HomeWidget>{
                   },
                 ),
               ),
+              SizedBox(height: height * 0.03),
+
+              // Programs Section
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    ' الباقات',
+                    style: TextStyle(fontSize: width * 0.05,
+                        fontWeight: FontWeight.bold,color: Color(0xFF1E2A4A)),
+                  ),
+                  Text(
+                    'المزيد',
+                    style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: Container(
+                  width: double.infinity,
+                  height: height * 0.18,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: const DecorationImage(
+                      image: AssetImage(AppImages.banner),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+
               SizedBox(height: height * 0.04),
 
               // Teachers Section
-              Text(
-                'أفضل المعلمين',
-                style: TextStyle(
-                  fontSize: width * 0.05,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    ' المعلمون',
+                    style: TextStyle(
+                      fontSize: width * 0.05,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    'المزيد',
+                    style: TextStyle(fontSize: width * 0.04, color: Colors.grey[600]),
+                  ),
+                ],
               ),
 
               SizedBox(height: height * 0.02),
 
-              // Teacher Card
-              TeacherCard(
-                name: 'المعلمة منى أحمد',
-                specialty: 'تحفيظ القرآن الكريم',
-                imagePath: AppImages.teacher,
-                rating: 4,
-                title: "احجز الجلسه",
+              // SizedBox(
+              //   height: height * 0.94,
+              //   child: ListView.builder(
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: 3,
+              //     itemBuilder: (context, index) {
+              //       return TeacherCard(
+              //         name: 'المعلمة منى أحمد',
+              //         specialty: 'تحفيظ القرآن الكريم',
+              //         imagePath: AppImages.teacher,
+              //         rating: 4,
+              //         title: "احجز الجلسه",
+              //       );
+              //     },
+              //   ),
+              // ),
+              SizedBox(
+                height: height*0.2,
+                child: ListView(
+                  children: [
+                    TeacherCard(
+                      name: 'المعلمة منى أحمد',
+                      specialty: 'تحفيظ القرآن الكريم',
+                      imagePath: AppImages.teacher,
+                      rating: 4,
+                      title: "احجز الجلسه",
+                    ),
+                  ],
+                ),
               ),
+              SizedBox(height: height * 0.02),
             ],
           ),
         ),

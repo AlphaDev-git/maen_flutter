@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maen/Core/Utils/app.images.dart';
+import 'package:maen/feature/AuthScreen/function/auth_function.dart';
 import 'package:maen/feature/AuthScreen/view/login_view.dart';
 
 
@@ -43,6 +44,7 @@ class _OnBoardWidget extends State<OnBoardWidget>{
         curve: Curves.easeInOut,
       );
     } else {
+      saveStart("token");
      Get.to(LoginView(),duration: Duration(seconds: 1),transition: Transition.fadeIn);
     }
   }

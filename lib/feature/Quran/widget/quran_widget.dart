@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:maen/feature/Quran/widget/sura_details_widget.dart';
+import 'package:maen/feature/Quran/widget/sura_list_item.dart';
+import 'package:maen/models/user_model.dart';
 
 import '../../../Core/Utils/app.images.dart';
+import '../quran_const.dart';
 
 class QuranWidget extends StatefulWidget {
+  UserModel userModel;
+  QuranWidget(this.userModel);
   @override
   State<StatefulWidget> createState() {
     return _QuranWidget();
@@ -12,6 +19,7 @@ class QuranWidget extends StatefulWidget {
 class _QuranWidget extends State<QuranWidget> {
   bool isSurahView = false;
   int selectedSurah = 0;
+
   final List<Map<String, dynamic>> surahs = [
     {'name': 'الفاتحة', 'verses': 7, 'type': 'مكية'},
     {'name': 'البقرة', 'verses': 286, 'type': 'مدنية'},
@@ -19,6 +27,7 @@ class _QuranWidget extends State<QuranWidget> {
     {'name': 'النساء', 'verses': 176, 'type': 'مدنية'},
     {'name': 'المائدة', 'verses': 120, 'type': 'مدنية'},
   ];
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -41,17 +50,17 @@ class _QuranWidget extends State<QuranWidget> {
                 children: [
                   isSurahView
                       ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isSurahView = !isSurahView;
-                            });
-                          },
-                          icon: Icon(Icons.arrow_back),
-                        )
+                    onPressed: () {
+                      setState(() {
+                        isSurahView = !isSurahView;
+                      });
+                    },
+                    icon: const Icon(Icons.arrow_back),
+                  )
                       : CircleAvatar(
-                          radius: width * 0.06,
-                          backgroundImage: const AssetImage(AppImages.user),
-                        ),
+                    radius: width * 0.06,
+                    backgroundImage: const AssetImage(AppImages.user),
+                  ),
                   SizedBox(
                     width: width * 0.7,
                     child: TextField(
@@ -69,8 +78,9 @@ class _QuranWidget extends State<QuranWidget> {
                   ),
                 ],
               ),
-
               SizedBox(height: height * 0.03),
+
+              // View section
               SizedBox(
                 height: height * 0.9,
                 child: Padding(
@@ -88,45 +98,38 @@ class _QuranWidget extends State<QuranWidget> {
   }
 
   Widget _buildIndexView(double width, double height) {
-    return ListView.builder(
-      itemCount: surahs.length,
-      itemBuilder: (context, index) {
-        return Card(
-          color: Colors.white,
-          elevation: 3,
-          margin: EdgeInsets.only(bottom: height * 0.015),
-          child: ListTile(
-            title: Text(
-              surahs[index]['name'],
-              style: TextStyle(
-                fontSize: width * 0.045,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: Text(
-              '${surahs[index]['verses']} آية - ${surahs[index]['type']}',
-              style: TextStyle(
-                fontSize: width * 0.035,
-                color: Colors.grey[700],
-              ),
-            ),
-            leading: CircleAvatar(
-              backgroundColor: const Color(0xFF1E2A4A),
-              child: Text(
-                '${index + 1}',
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-            trailing: Icon(Icons.play_circle, color: Colors.grey[700]),
-            onTap: () {
-              setState(() {
-                isSurahView = true;
-                selectedSurah = index;
-              });
-            },
+    // ✅ FIXED: removed Expanded (it caused ParentDataWidget error)
+    return ListView.separated(
+      separatorBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Divider(
+            color: Colors.black,
+            thickness: 2,
           ),
         );
       },
+      itemBuilder: (context, index) {
+        return InkWell(
+          onTap: () {
+            Get.to(
+              SuraDetailsScreen(),
+              arguments: SuraDetailsArgs(
+                index: index,
+                suraArName: arabicAuranSuras[index],
+                suraEnName: englishQuranSurahs[index],
+              ),
+            );
+          },
+          child: sura_list_item(
+            index: index + 1,
+            ayaNum: AyaNumber[index],
+            suraAr: arabicAuranSuras[index],
+            suraEn: englishQuranSurahs[index],
+          ),
+        );
+      },
+      itemCount: AyaNumber.length,
     );
   }
 
@@ -151,12 +154,12 @@ class _QuranWidget extends State<QuranWidget> {
             ),
             child: Text(
               'بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ\n'
-              'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\n'
-              'الرَّحْمَـٰنِ الرَّحِيمِ\n'
-              'مَالِكِ يَوْمِ الدِّينِ\n'
-              'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\n'
-              'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\n'
-              'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
+                  'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ\n'
+                  'الرَّحْمَـٰنِ الرَّحِيمِ\n'
+                  'مَالِكِ يَوْمِ الدِّينِ\n'
+                  'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ\n'
+                  'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ\n'
+                  'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: width * 0.05,

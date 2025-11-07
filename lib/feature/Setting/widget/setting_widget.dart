@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:maen/feature/AuthScreen/function/auth_function.dart';
 import 'package:maen/feature/profile/view/profile_view.dart';
+import 'package:maen/models/user_model.dart';
 import '../../../Core/Utils/app.images.dart';
 
 
 class SettingWidget extends StatefulWidget{
+  UserModel userModel;
+  SettingWidget(this.userModel);
   @override
   State<StatefulWidget> createState() {
     return _SettingWidget();
@@ -47,9 +51,8 @@ class _SettingWidget extends State<SettingWidget>{
             ),
             Padding(
               padding: EdgeInsets.only(top: 53),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+              child: SingleChildScrollView(
+                child:
                   Column(
                     children: [
                       CircleAvatar(
@@ -57,37 +60,51 @@ class _SettingWidget extends State<SettingWidget>{
                         radius: 50,
                       ),
                       SizedBox(height: height*0.02,),
-                      Text("احمد محمد احمد",
+                      Text("${widget.userModel.name}",
                       style: TextStyle(fontSize: width*0.06,fontWeight: FontWeight.bold),),
                       SizedBox(height: height*0.02,),
                       _settingsItem(Icons.person, 'البيانات الشخصية', () {
                         Get.to(ProfileView(),duration: Duration(seconds: 1),transition: Transition.cupertino);
                       }),
+                      _settingsItem(Icons.language, 'اللغة', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.person, 'المعلمون', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.paste, 'الباقات', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.verified, 'الشهادات', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.ballot_sharp, 'عن معين', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.question_mark, 'الاسئلة الشائعة', () {}),
+                      SizedBox(height: height*0.02,),
+                      _settingsItem(Icons.call, 'تواصل معنا', () {}),
                       SizedBox(height: height*0.02,),
                       _settingsItem(Icons.privacy_tip, 'سياسة الخصوصية', () {}),
                       SizedBox(height: height*0.02,),
                       _settingsItem(Icons.description, 'شروط الاستخدام', () {}),
                       SizedBox(height: height*0.02,),
-                      _settingsItem(Icons.language, 'اللغة', () {}),
+              SizedBox(height: height * 0.05),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: height * 0.02, horizontal: width * 0.1),
+                      side: const BorderSide(color: Color(0xFF1E2A4A)),
+                    ),
+                    onPressed: () {
+                      LogoutMethod(context);
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text('تسجيل خروج'),
+                  ),
+                  SizedBox(height: height*0.02,),
                     ],
                   ),
-                  SizedBox(height: height * 0.05),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: height * 0.02, horizontal: width * 0.1),
-                          side: const BorderSide(color: Color(0xFF1E2A4A)),
-                        ),
-                        onPressed: () {},
-                        icon: const Icon(Icons.logout),
-                        label: const Text('تسجيل خروج'),
-                      ),
-                      SizedBox(height: height*0.02,),
-                    ],
+              ]
+
                   )
-                ],
               ),
             ),
           ],

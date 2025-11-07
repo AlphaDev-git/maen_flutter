@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:maen/Core/Utils/app.images.dart';
-
-import '../../Home/widget/teacher_card.dart';
+import 'package:maen/feature/Cources/widget/my_course_card.dart';
+import 'package:maen/feature/Cources/widget/my_course_widget.dart';
+import 'package:maen/feature/Cources/widget/my_history_cources.dart';
+import 'package:maen/models/user_model.dart';
 
 
 class CourcesWidget extends StatefulWidget{
+  UserModel userModel;
+  CourcesWidget(this.userModel);
   @override
   State<StatefulWidget> createState() {
     return _CourcesWidget();
@@ -12,8 +16,15 @@ class CourcesWidget extends StatefulWidget{
 }
 
 
-class _CourcesWidget extends State<CourcesWidget>{
+class _CourcesWidget extends State<CourcesWidget>with TickerProviderStateMixin{
   String mycourse="my";
+  late TabController _tabController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -23,100 +34,12 @@ class _CourcesWidget extends State<CourcesWidget>{
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: Padding(
-          padding: EdgeInsets.symmetric(horizontal: width * 0.05, vertical: height * 0.03),
-          child: Column(
-            children: [
-              SizedBox(height: height * 0.02),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CircleAvatar(
-                    radius: width * 0.06,
-                    backgroundImage: const AssetImage(AppImages.user),
-                  ),
-                  SizedBox(
-                    width: width * 0.7,
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'بحث...',
-                        prefixIcon: const Icon(Icons.search),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                        contentPadding: EdgeInsets.symmetric(vertical: height * 0.01),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: mycourse == "my"
-                              ? const Color(0xFF1E2A4A)
-                              : Colors.transparent,
-                          side: const BorderSide(color: Color(0xFF1E2A4A)),
-                          padding: EdgeInsets.symmetric(vertical: height * 0.018),
-                        ),
-                        onPressed: () {
-                          setState(() => mycourse = "my");
-                        },
-                        child: Text(
-                          "خططي",
-                          style: TextStyle(
-                            color: mycourse == "my" ? Colors.white : const Color(0xFF1E2A4A),
-                            fontSize: width * 0.045,
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: width * 0.04),
-                    Expanded(
-                      child: OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Color(0xFF1E2A4A)),
-                          padding: EdgeInsets.symmetric(vertical: height * 0.018),
-                          backgroundColor: mycourse == "female"
-                              ? const Color(0xFF1E2A4A)
-                              : Colors.transparent,
-                        ),
-                        onPressed: () {
-                          setState(() => mycourse = "female");
-                        },
-                        child: Text(
-                          "البرامج",
-                          style: TextStyle(
-                            color: mycourse == "female" ? Colors.white : const Color(0xFF1E2A4A),
-                            fontSize: width * 0.045,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: height*0.6,
-                child: ListView.builder(
-                  itemCount: 3,
-                  itemBuilder: (context, index) {
-                    return TeacherCard(
-                      name: 'المعلمة منى أحمد',
-                      specialty: 'تحفيظ القرآن الكريم',
-                      imagePath: AppImages.teacher,
-                      rating: 4,
-                      title: "ابداء الجلسه",
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
+        body: TabBarView(
+          controller: _tabController,
+          children:  [
+            MyCourcesWidget(),
+            MyHistoryCourcesWidget(),
+          ],
         ),
       ),
     );

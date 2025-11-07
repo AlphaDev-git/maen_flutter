@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:maen/Core/Utils/app.images.dart';
+import 'package:maen/feature/AuthScreen/function/auth_function.dart';
 import 'package:maen/feature/AuthScreen/view/signup_view.dart';
-import 'package:maen/feature/Main_Screen/view/main_screen_view.dart';
+import '../../../Core/Widgets/common_widgets.dart';
 
 
 class LoginWidget extends StatefulWidget{
@@ -126,7 +127,18 @@ class _LoginWidget extends State<LoginWidget>{
                         ),
                       ),
                       onPressed: () {
-                        Get.to(MainScreenView(),duration: Duration(seconds: 1),transition: Transition.fade);
+                        if(emailController.text!=""){
+                          if(passwordController.text!=""){
+                            LoginMethod(context, emailController.text,
+                                passwordController.text);
+                          }
+                          else{
+                            showErrorDialog(context,"برجاء ادخال كلمة السر");
+                          }
+                        }
+                        else{
+                          showErrorDialog(context,"برجاء ادخال البريد الالكتروني");
+                        }
                       },
                       child: const Text(
                         'تسجيل',
